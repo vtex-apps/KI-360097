@@ -217,10 +217,14 @@ async function findBestSeler() {
 $(document).ready(function () {
   let previusSelectedAddress =
     vtexjs.checkout.orderForm.shippingData.selectedAddresses[0];
-
   $(window).on("orderFormUpdated.vtex", async function (_evt, orderForm) {
     const selectedAddresses = orderForm.shippingData.selectedAddresses[0];
-    if (
+    if (!previusSelectedAddress && selectedAddresses) {
+      console.log("coloco direccion por primera vez");
+      await findBestSeler();
+
+      previusSelectedAddress = selectedAddresses;
+    } else if (
       selectedAddresses.addressId !== previusSelectedAddress.addressId ||
       selectedAddresses.addressType !== previusSelectedAddress.addressType ||
       selectedAddresses.city !== previusSelectedAddress.city ||
