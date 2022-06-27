@@ -129,14 +129,40 @@ function changeCartItemsSeller(bestSellerPerItem) {
     }
   });
 }
-
 const usualSellers = ["easycle5990001", "easycle5990003"];
+
+function getCartSellers() {
+  const items = vtexjs.checkout.orderForm.items;
+  const cartSellers = [];
+
+  items.forEach((item) => {
+    let seller = "";
+    if (item.seller === "1") {
+      if (item.sellerChain.length > 1) {
+        seller = item.sellerChain[1];
+      } else {
+        seller = item.sellerChain[0];
+      }
+    } else {
+      seller = item.seller;
+    }
+    if (seller !== "1") {
+      if (!cartSellers.includes(seller) && !usualSellers.includes(seller)) {
+        cartSellers.push(seller);
+      }
+    }
+  });
+  return cartSellers;
+}
 
 const geoCoordinates =
   vtexjs.checkout.orderForm.shippingData.selectedAddresses[0].geoCoordinates;
 const country =
   vtexjs.checkout.orderForm.shippingData.selectedAddresses[0].country;
 const slaList = [];
+
+//obtener los sellers del carrito
+usualSellers.push(...getCartSellers());
 
 //ejecuto la simulación en cada seller
 for (const seller of usualSellers) {
@@ -164,6 +190,11 @@ for (const seller of usualSellers) {
             const slasDelivery = slas.filter(
               (s) => s.deliveryChannel === "delivery"
             );
+            console.log({
+              itemId: item.id,
+              seller: item.seller,
+              slas: slasDelivery,
+            });
             slaList.push({
               itemId: item.id,
               seller: item.seller,
@@ -179,4 +210,4 @@ for (const seller of usualSellers) {
 const bestSellerPerItem = selectBestSellerPerItem(slaList);
 console.log("bestSellerPerItem", bestSellerPerItem);
 changeCartItemsSeller(bestSellerPerItem);
-console.log(vtexjs.checkout.orderForm.items)
+console.log(vtexjs.checkout.orderForm.items);
