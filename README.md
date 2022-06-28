@@ -4,8 +4,6 @@ This script solves the KI https://vtexhelp.zendesk.com/agent/tickets/360097.
 
 You need to add the script to the checkout at the `checkout6-custom.js`.
 
-// TODO: Run the script when the address changes.
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people:
